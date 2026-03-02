@@ -1,11 +1,18 @@
 import { isDev } from "../utils/env";
 //
+import bscIcon from "@/assets/chainListIcon/bsc.svg";
+import baseIcon from "@/assets/chainListIcon/base.svg";
+import ethIcon from "@/assets/chainListIcon/eth.svg";
+import monadIcon from "@/assets/chainListIcon/monad.svg";
+import morphIcon from "@/assets/chainListIcon/morph.svg";
+import okxIcon from "@/assets/chainListIcon/okx.svg";
+
 const devChain = [
   {
     label: "BSC",
-    icon: "",
+    icon: bscIcon,
     rpcUrl: "https://bsc-testnet-rpc.publicnode.com/",
-    chainId: "0x61",
+    chainId: "0x61",  
     chainName: "BNB Chain",
     baseToken: [
       {
@@ -47,7 +54,7 @@ const devChain = [
   },
   {
     label: "ETH",
-    icon: "",
+    icon: ethIcon,
     rpcUrl: "https://bsc-testnet-rpc.publicnode.com/",
     chainId: "0x61",
     chainName: "ETH",
@@ -61,7 +68,7 @@ const devChain = [
   },
   {
     label: "Base",
-    icon: "",
+    icon: baseIcon,
     rpcUrl: "https://bsc-testnet-rpc.publicnode.com/",
     chainId: "0x61",
     chainName: "ETH",
@@ -80,7 +87,7 @@ const devChain = [
   },
   {
     label: "OKX",
-    icon: "",
+    icon: okxIcon,
     rpcUrl: "https://bsc-testnet-rpc.publicnode.com/",
     chainId: "0x61",
     chainName: "ETH",
@@ -94,7 +101,7 @@ const devChain = [
   },
   {
     label: "Morph",
-    icon: "",
+    icon: morphIcon,
     rpcUrl: "https://bsc-testnet-rpc.publicnode.com/",
     chainId: "0x61",
     chainName: "ETH",
@@ -108,7 +115,7 @@ const devChain = [
   },
   {
     label: "Monad",
-    icon: "",
+    icon: monadIcon,
     rpcUrl: "https://bsc-testnet-rpc.publicnode.com/",
     chainId: "0x61",
     chainName: "ETH",

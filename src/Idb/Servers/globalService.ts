@@ -1,4 +1,4 @@
-// userService.ts
+//全局设置表
 import { dbPromise } from "../db";
 
 // 单个新增
@@ -22,3 +22,12 @@ export async function updateGlobal(id: number, updateData: any) {
   };
   return db.put("global", newData);
 }
+// await addGlobal({
+//   id: 1,
+//   rpc: "123", //rpc地址
+//   contractAddress: "测试", //合约地址
+//   baseToken: "1", //基础代币
+//   pool: "1", //池子
+//   gasPrice: "1", //gas价格
+//   briberyPrice: "1", //贿赂价格
+// });

@@ -1,0 +1,16 @@
+.headerBox {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  .option {
+    margin-inline: 10px;
+  }
+  .chainBox {
+    display: flex;
+    align-items: center;
+  }
+  .spn {
+    margin-left: 14px;
+    font-size: 14px;
+  }
+}

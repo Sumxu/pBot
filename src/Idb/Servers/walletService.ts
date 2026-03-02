@@ -1,4 +1,4 @@
-// userService.ts
+//钱包列表管理表
 import { dbPromise } from "../db";
 
 // 单个新增

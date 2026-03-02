@@ -1,0 +1,19 @@
+.SilderBox {
+  width: 100%;
+  padding-inline: 12px;
+  .settingOption {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+    .tagLeft {
+      font-size: 14px;
+      padding: 4px 24px !important;
+    }
+    .inputBox {
+      flex: auto;
+    }
+    .rightBtn{
+        margin-left: 12px;
+    }
+  }
+}
