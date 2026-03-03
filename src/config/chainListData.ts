@@ -17,7 +17,7 @@ const devChain = [
     baseToken: [
       {
         label: "BNB",
-        value: "Wrapped",
+        value: "Wrapped BNB",
         address: "",
       },
       {

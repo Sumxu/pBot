@@ -4,7 +4,8 @@ const { Header, Sider, Content } = Layout;
 import "./index.scss";
 import { useEffect } from "react";
 import HeaderPage from "@/pages/Header/index";
-import SilderBox from '@/pages/Content/Sider'
+import SilderBox from "@/pages/Content/Sider";
+import MarketManagement from "@/pages/Content/MarketManagement";
 const MainLayout: React.FC = () => {
   const headerStyle: React.CSSProperties = {
     backgroundColor: "#fff",
@@ -37,7 +38,9 @@ const MainLayout: React.FC = () => {
           <Sider width="40%" style={siderStyle}>
             <SilderBox />
           </Sider>
-          <Content style={contentStyle}>Content</Content>
+          <Content style={contentStyle}>
+            <MarketManagement></MarketManagement>
+          </Content>
         </Layout>
       </Layout>
     </Flex>

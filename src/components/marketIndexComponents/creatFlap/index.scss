@@ -1,0 +1,54 @@
+.CreatFlapBox {
+  .cradOption {
+    display: flex;
+    align-items: center;
+    margin-bottom: 24px;
+    .mLeft12 {
+      margin-left: 12px;
+    }
+    .m12Block {
+      margin-block: 26px;
+    }
+    .inputOption {
+      display: flex;
+      align-items: center;
+      flex: auto;
+    }
+    .rightBtn {
+      margin-left: 12px;
+    }
+  }
+  .leftUploadImage {
+    flex: none;
+  }
+  .flexCenter {
+    display: flex;
+    align-items: center;
+  }
+  .switchBox {
+    padding: 6px 14px;
+    border-radius: 8px;
+    background: #f8f9fa;
+    display: flex;
+    align-items: center;
+    .typeName {
+      font-weight: bold;
+      padding-inline: 12px;
+    }
+  }
+  .rightMessage {
+    flex: auto;
+    margin-left: 24px;
+  }
+  .leftOption {
+    flex: none;
+  }
+  .rightOption {
+    flex: auto;
+    display: flex;
+    align-items: center;
+  }
+  .btnBox {
+    flex: auto;
+  }
+}
