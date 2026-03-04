@@ -1,0 +1,52 @@
+.walletSettingsBox {
+  .walletSettingBox {
+    .contentOption {
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      .fromOption {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        width: 100%;
+        .fromItem {
+          margin-bottom: 12px;
+        }
+        .btnBox {
+          width: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          button {
+            flex: auto;
+          }
+          .btnMargin {
+            margin-inline: 4px;
+          }
+        }
+        .ant-form-item {
+        }
+        .inputBuy {
+          max-width: 140px;
+        }
+        .inputAuto {
+          min-width: 200px;
+        }
+        .selectOption {
+          min-width: 200px;
+        }
+      }
+      .btnListOption {
+        display: flex;
+        align-items: center;
+      }
+    }
+  }
+  .btnLeft12 {  
+    margin-left: 12px;
+  }
+  .btnRight12 {  
+    margin-right: 12px;
+  }
+}

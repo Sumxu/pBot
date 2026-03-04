@@ -1,0 +1,76 @@
+.autoMarketCrashBox {
+  .autoMarketCrashSettingBox {
+
+    .contentOption {
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      .sliderOption {
+        width: 100%;
+      }
+
+      .fromOption {
+        display: flex;
+        align-items: center;
+
+        .fromItem {
+          // margin-bottom: 12px;
+        }
+
+        .inputWidth120 {
+          width: 120px;
+        }
+
+        .btnBox {
+          width: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+
+          button {
+            flex: auto;
+          }
+
+          .btnMargin {
+            margin-inline: 4px;
+          }
+        }
+
+        .ant-form-item {
+          margin-bottom: 0px !important;
+        }
+
+        .inputBuy {
+          max-width: 140px;
+        }
+
+        .inputAuto {
+          min-width: 200px;
+        }
+
+        .selectOption {
+          min-width: 200px;
+        }
+      }
+
+      .btnListOption {
+        display: flex;
+        align-items: center;
+      }
+    }
+  }
+
+  .btnLeft12 {
+    margin-left: 12px;
+  }
+
+  .btnRight12 {
+    margin-right: 12px;
+  }
+
+  .btnAuto {
+    flex: auto;
+  }
+}
