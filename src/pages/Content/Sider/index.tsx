@@ -4,8 +4,10 @@ import { useEffect } from "react";
 import { Divider, Tag, Input, Button, Select, Col, Row, Empty } from "antd";
 import { RedoOutlined } from "@ant-design/icons";
 import chainListData from "@/config/chainListData";
+import { useChainStore } from "@/Store/chainStore";
 const SilderBox: React.FC = () => {
   const [originTokenData, setOriginTokenData] = useState([]); //链对应的原生代币
+  const {chainId,setChainId}=useChainStore()
   const [pondList, setPondList] = useState([
     {
       label: "Uniswap V2",
@@ -16,8 +18,11 @@ const SilderBox: React.FC = () => {
   ]);
   const initData = () => {
     console.log("chainListData==", chainListData);
-    setOriginTokenData(chainListData[0]);
+    // setOriginTokenData(chainListData[0]);
   };
+  useEffect(()=>{
+    console.log("chainId监听改变了----",chainId)
+  },[chainId])
   useEffect(() => {
     initData();
   }, []);

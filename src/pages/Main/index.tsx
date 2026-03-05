@@ -1,11 +1,13 @@
 import React from "react";
-import { Layout, Flex } from "antd";
+import { Layout, Flex, Spin } from "antd";
 const { Header, Sider, Content } = Layout;
 import "./index.scss";
 import { useEffect } from "react";
 import HeaderPage from "@/pages/Header/index";
 import SilderBox from "@/pages/Content/Sider";
 import MarketManagement from "@/pages/Content/MarketManagement";
+import { useChainStore } from "@/Store/chainStore";
+import { useInitApp } from "@/Hooks/useInitApp";
 const MainLayout: React.FC = () => {
   const headerStyle: React.CSSProperties = {
     backgroundColor: "#fff",
@@ -25,25 +27,44 @@ const MainLayout: React.FC = () => {
     minHeight: "100vh",
     backgroundColor: "#fff",
   };
-  useEffect(() => {}, []);
+  const { loading } = useInitApp();
+  const initChainId = useChainStore((s) => s.initChainId);
+  useEffect(() => {
+    initChainId();
+  }, []);
+  if (loading) {
+    return (
+      <div
+        style={{
+          height: "100vh",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Spin size="large" tip="系统初始化中..." />
+      </div>
+    );
+  }
+
   return (
-    <Flex gap="middle" wrap>
-      <Layout style={layoutStyle}>
-        <div className="headerTop">
-          <Header style={headerStyle}>
-            <HeaderPage></HeaderPage>
-          </Header>
-        </div>
-        <Layout>
-          <Sider width="40%" style={siderStyle}>
-            <SilderBox />
-          </Sider>
-          <Content style={contentStyle}>
-            <MarketManagement></MarketManagement>
-          </Content>
-        </Layout>
+    <Layout style={layoutStyle}>
+      <div className="headerTop">
+        <Header style={headerStyle}>
+          <HeaderPage />
+        </Header>
+      </div>
+
+      <Layout>
+        <Sider width="40%" style={siderStyle}>
+          <SilderBox />
+        </Sider>
+
+        <Content style={contentStyle}>
+          <MarketManagement />
+        </Content>
       </Layout>
-    </Flex>
+    </Layout>
   );
 };
 

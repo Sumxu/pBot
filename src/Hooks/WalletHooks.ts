@@ -1,4 +1,4 @@
-import { userAddress, userChainId } from "@/Store/Store";
+import { userAddress, userChainId } from "@/Store/chainStore";
 import { message } from "antd";
 import EnvManager from "@/config/EnvManager";
 import { storage } from "@/Hooks/useLocalStorage";

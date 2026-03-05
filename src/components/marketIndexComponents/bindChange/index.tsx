@@ -10,7 +10,7 @@ import {
   Divider,
   Switch,
   Slider,
-  Tag
+  Tag,
 } from "antd";
 const BindChange: React.FC = () => {
   const [isOpenBuySwitch, setIsOpenBuySwitch] = useState<boolean>(false); //买入
@@ -105,7 +105,9 @@ const BindChange: React.FC = () => {
               <Button className="btnLeft12">50%</Button>
               <Button className="btnLeft12">70%</Button>
               <Button className="btnLeft12">100%</Button>
-              <Tag color="magenta" className="btnLeft12">实际卖出:0代币</Tag>
+              <Tag color="magenta" className="btnLeft12">
+                实际卖出:0代币
+              </Tag>
             </div>
           </div>
           <Divider

@@ -18,7 +18,7 @@ import BindChange from "@/components/marketIndexComponents/bindChange";
 
 const MarketIndex: React.FC = () => {
   const [mode, setMode] = useState<TabPosition>("top");
-  const [activeKey, setActiveKey] = useState<string>("11"); //记录当前选中的tab
+  const [activeKey, setActiveKey] = useState<string>("1"); //记录当前选中的tab
   const componentMap: Record<string, React.ReactNode> = {
     "1": <CreatFour />,
     "2": <CreatFlap />,
@@ -36,7 +36,7 @@ const MarketIndex: React.FC = () => {
     <div className="marketIndexBox">
       <div className="tabsBox">
         <Tabs
-          defaultActiveKey="11"
+          defaultActiveKey="1"
           tabPosition={mode}
           items={marketTagDataConfig.map((item, i) => ({
             label: item.label,

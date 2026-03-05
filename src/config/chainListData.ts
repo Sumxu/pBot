@@ -12,7 +12,7 @@ const devChain = [
     label: "BSC",
     icon: bscIcon,
     rpcUrl: "https://bsc-testnet-rpc.publicnode.com/",
-    chainId: "0x61",  
+    chainId: "0x61",
     chainName: "BNB Chain",
     baseToken: [
       {
@@ -56,7 +56,7 @@ const devChain = [
     label: "ETH",
     icon: ethIcon,
     rpcUrl: "https://bsc-testnet-rpc.publicnode.com/",
-    chainId: "0x61",
+    chainId: "0x1",
     chainName: "ETH",
     baseToken: [
       {
@@ -67,10 +67,11 @@ const devChain = [
     ],
   },
   {
+    id:3,
     label: "Base",
     icon: baseIcon,
     rpcUrl: "https://bsc-testnet-rpc.publicnode.com/",
-    chainId: "0x61",
+    chainId: "0x2",
     chainName: "ETH",
     baseToken: [
       {

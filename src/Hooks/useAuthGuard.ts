@@ -3,7 +3,7 @@ import { storage } from "@/Hooks/useLocalStorage";
 import { useNavigate, useLocation } from "react-router-dom";
 import { isWalletConnected } from "@/Hooks/useWalletStatus";
 import { ensureWalletConnected } from "@/Hooks/WalletHooks";
-import { userAddress } from "@/Store/Store";
+import { userAddress } from "@/Store/chainStore";
 
 export function useAuthGuard() {
   const navigate = useNavigate();
