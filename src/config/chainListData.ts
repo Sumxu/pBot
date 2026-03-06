@@ -9,6 +9,7 @@ import okxIcon from "@/assets/chainListIcon/okx.svg";
 
 const devChain = [
   {
+    chainConfigId: 98,
     label: "BSC",
     icon: bscIcon,
     rpcUrl: "https://bsc-testnet-rpc.publicnode.com/",
@@ -53,6 +54,7 @@ const devChain = [
     ],
   },
   {
+    chainConfigId: 1,
     label: "ETH",
     icon: ethIcon,
     rpcUrl: "https://bsc-testnet-rpc.publicnode.com/",
@@ -67,7 +69,7 @@ const devChain = [
     ],
   },
   {
-    id:3,
+    chainConfigId: 2,
     label: "Base",
     icon: baseIcon,
     rpcUrl: "https://bsc-testnet-rpc.publicnode.com/",
@@ -87,6 +89,7 @@ const devChain = [
     ],
   },
   {
+    chainConfigId: 3,
     label: "OKX",
     icon: okxIcon,
     rpcUrl: "https://bsc-testnet-rpc.publicnode.com/",
@@ -101,6 +104,7 @@ const devChain = [
     ],
   },
   {
+    chainConfigId: 4,
     label: "Morph",
     icon: morphIcon,
     rpcUrl: "https://bsc-testnet-rpc.publicnode.com/",
@@ -115,6 +119,7 @@ const devChain = [
     ],
   },
   {
+    chainConfigId: 5,
     label: "Monad",
     icon: monadIcon,
     rpcUrl: "https://bsc-testnet-rpc.publicnode.com/",

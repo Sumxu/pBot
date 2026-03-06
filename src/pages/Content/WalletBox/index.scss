@@ -1,0 +1,41 @@
+.walletPage {
+    margin-right: 12px;
+
+    .walletBox {
+        border-radius: 6px;
+
+        .searchOption {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+
+            .searchInput {
+                width: 390px;
+                margin-right: 12px;
+                flex: none;
+            }
+
+            .otherInput {
+                margin-left: 12px;
+                flex: auto;
+            }
+        }
+    }
+
+    .tableBox {
+        .toolsOption {
+            margin-top: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+
+            button {
+                margin-left: 12px;
+            }
+        }
+
+        .tableOption {
+            margin-top: 24px;
+        }
+    }
+}

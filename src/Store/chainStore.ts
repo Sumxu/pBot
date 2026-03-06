@@ -1,3 +1,4 @@
+let inited = false;
 import { create } from "zustand";
 import { getGlobal, updateGlobal } from "@/Idb/Servers/globalService";
 //链路的监听
@@ -17,15 +18,16 @@ export const useChainStore = create<ChainState>((set, get) => ({
     await updateGlobal(
       1, // 或者 id: "chain"
       {
-        chainId: chainId,
+        chainConfigId: chainId,
       },
     );
     console.log("chainId 已同步到 DB:", chainId);
   },
   initChainId: async () => {
+    if (inited) return; // 已经初始化过
+    inited = true;
     const globalData = await getGlobal(1); //默认查询BSC值
-    const chainId = globalData.chainId;
-    console.log("chainId=查询到的=chainId", chainId);
+    const chainId = globalData.chainConfigId;
     if (globalData) {
       set({ chainId });
     }

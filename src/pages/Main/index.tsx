@@ -28,10 +28,6 @@ const MainLayout: React.FC = () => {
     backgroundColor: "#fff",
   };
   const { loading } = useInitApp();
-  const initChainId = useChainStore((s) => s.initChainId);
-  useEffect(() => {
-    initChainId();
-  }, []);
   if (loading) {
     return (
       <div

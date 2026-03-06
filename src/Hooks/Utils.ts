@@ -1,6 +1,10 @@
 import { message } from "antd";
 import { ethers, BigNumber } from "ethers";
 import { t } from "i18next";
+export interface ParsedWallet {
+  privateKey: string;
+  tag?: string;
+}
 /**
  * 格式化钱包地址
  * @param addr 钱包地址
@@ -416,3 +420,64 @@ export function timestampToFull(ts: number, isMs = false) {
     date.getSeconds(),
   )}`;
 }
+/**
+ *
+ * @param value 判断是否是null或者是undefined
+ * @returns
+ */
+export const checkValue = (value: any): boolean => {
+  if (value === null || value === undefined || value === "") {
+    return false;
+  }
+  return true;
+};
+/**
+ *
+ * @param key 判断私钥是否正确
+ * @returns
+ */
+export const isValidPrivateKey = (key: string) => {
+  try {
+    new ethers.Wallet(key);
+    return true;
+  } catch {
+    return false;
+  }
+};
+
+/**
+ * 解析粘贴的私钥数据
+ * 支持：
+ * 1. 换行分隔
+ * 2. 私钥,标签
+ * 3. CSV 格式
+ */
+ export const parseWalletInput = (input: string): ParsedWallet[] => {
+  if (!input) return [];
+
+  return input
+    .split(/\n/) // 按换行
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .map((line) => {
+      // 支持 , 或 tab 或 空格
+      const arr = line.split(/[,\t ]+/).map((v) => v.trim());
+
+      const privateKey = arr[0];
+      const tag = arr[1];
+
+      if (!isValidPrivateKey(privateKey)) {
+        return null; // 非法私钥直接过滤
+      }
+
+      const wallet = new ethers.Wallet(privateKey);
+
+      return {
+        privateKey,
+        address: wallet.address,
+        tag: tag || undefined,
+        
+      };
+    })
+    .filter(Boolean) as ParsedWallet[];
+};

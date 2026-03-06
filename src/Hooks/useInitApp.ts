@@ -1,32 +1,48 @@
+  
 // hooks/useInitApp.ts
 import { useEffect, useState } from "react";
 import { dbPromise } from "@/Idb/db";
-import { addGlobal } from "@/Idb/Servers/globalService";
+import { addGlobal, getGlobal } from "@/Idb/Servers/globalService";
 import chainConfig from "@/config/chainListData.ts";
+import { useChainStore } from "@/Store/chainStore";
+
 export const useInitApp = () => {
   const [loading, setLoading] = useState(true);
 
+  // 👇 获取 store 方法
+  const initChainId = useChainStore((s) => s.initChainId);
+
   useEffect(() => {
     const init = async () => {
-      const db = await dbPromise; // 👈 这里就是调用 db.ts
+      const db = await dbPromise;
       console.log("数据库已打开");
-      console.log("1=-",chainConfig)
-      // 初始化默认 chain
-      await addGlobal({
-        id: 1,
-        chainId:chainConfig[0].chainId,
-        rpc: chainConfig[0].rpcUrl, //rpc地址
-        contractAddress: "", //合约地址
-        baseToken: "1", //基础代币
-        pool: "1", //池子
-        gasPrice: "1", //gas价格
-        briberyPrice: "1", //贿赂价格
-      });
+
+      const global = await getGlobal(1);
+
+      if (!global) {
+        console.log("首次初始化");
+
+        await addGlobal({
+          id: 1,
+          chainId: chainConfig[0].chainId,
+          chainConfigId: chainConfig[0].chainConfigId,
+          rpc: chainConfig[0].rpcUrl,
+          contractAddress: "",
+          baseToken: "1",
+          pool: "1",
+          gasPrice: "1",
+          briberyPrice: "1",
+        });
+      }
+
+      // 👇 初始化 chain
+      await initChainId();
+
       setLoading(false);
     };
 
     init();
-  }, []);
+  }, [initChainId]);
 
   return { loading };
 };

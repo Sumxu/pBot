@@ -27,6 +27,32 @@ export async function deleteWallet(id: number) {
   const db = await dbPromise;
   return db.delete("wallet", id);
 }
+
+export async function deleteWalletsByIds(ids: number[]) {
+  const db = await dbPromise;
+
+  const tx = db.transaction("wallet", "readwrite");
+  const store = tx.objectStore("wallet");
+
+  ids.forEach((id) => {
+    store.delete(id);
+  });
+
+  await tx.done; // 等待事务完成
+}
+/**
+ * 删除所有的数据
+ */
+export async function deleteAllWallets() {
+  const db = await dbPromise;
+
+  const tx = db.transaction("wallet", "readwrite");
+  const store = tx.objectStore("wallet");
+
+  store.clear(); // 清空整个表
+
+  await tx.done;
+}
 //分页查询
 export async function getWalletPage(page: number, pageSize: number) {
   const db = await dbPromise;
@@ -34,7 +60,7 @@ export async function getWalletPage(page: number, pageSize: number) {
   const store = tx.objectStore("wallet");
   let skip = (page - 1) * pageSize;
   let result: any[] = [];
-  let cursor = await store.openCursor();
+  let cursor = await store.openCursor(null, "prev");
   while (cursor) {
     if (skip > 0) {
       skip--;
@@ -52,10 +78,18 @@ export async function getWalletTotal() {
   const db = await dbPromise;
   return db.count("wallet");
 }
-// 获取全部
-export async function getAllWallet() {
+ export async function getAllWallet() {
   const db = await dbPromise;
-  return db.getAll("wallet");
+  const tx = db.transaction("wallet");
+  const store = tx.objectStore("wallet");
+  const result: any[] = [];
+  let cursor = await store.openCursor(null, "prev"); // prev = 倒序
+  while (cursor) {
+    result.push(cursor.value);
+    cursor = await cursor.continue();
+  }
+
+  return result;
 }
 // 根据地址索引查对应的数据
 export async function getWalletByAddress(address: string) {

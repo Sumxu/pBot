@@ -3,19 +3,24 @@ import "./index.scss";
 import { Dropdown, Button, message } from "antd";
 import { useEffect } from "react";
 import { DownOutlined } from "@ant-design/icons";
-import bscIcon from "@/assets/chainListIcon/bsc.svg";
 import type { MenuProps } from "antd";
 import chainListData from "@/config/chainListData";
 import { useChainStore } from "@/Store/chainStore";
+import { useWallet } from "@/Hooks/walletHooks/wallet";
+import { formatAddress } from "@/Hooks/Utils";
+
 const HeaderPage: React.FC = () => {
-  const [checkChainIndex, setCheckChainIndex] = useState<number>(0);
+  const [checkChainIndex, setCheckChainIndex] = useState<number>(0); //链路的下标
+  const { account, connectWallet } = useWallet();
   const { setChainId, chainId } = useChainStore();
   const handleButtonClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    console.log("e==handleButtonClick=", e.key, chainListData);
-    let index = e.key;
-    console.log("e==handleButtonClick=", chainListData[index].chainId);
-    setChainId(chainListData[index].chainId);
-    setCheckChainIndex(e.key);
+    if (e.key) {
+      const index = chainListData.findIndex(
+        (item) => item.chainConfigId == e.key,
+      );
+      setChainId(chainListData[index].chainConfigId);
+      setCheckChainIndex(index);
+    }
   };
   const [items, setItems] = useState<MenuProps["items"]>([]);
   const menuProps = {
@@ -25,17 +30,21 @@ const HeaderPage: React.FC = () => {
   const initData = () => {
     const newItems = chainListData.map((item, index) => ({
       label: item.label,
-      key: item.chainId.toString(),
+      key: item.chainConfigId.toString(),
       icon: <img src={item.icon} style={{ width: 16 }} />,
     }));
     setItems(newItems);
-    console.log("newItems==",newItems)
-    const index = newItems.findIndex((item) => item.key === chainId);
-    console.log("index=1=",index)
+    const index = newItems.findIndex((item) => item.key == chainId);
     setCheckChainIndex(index);
   };
   const chainInfoByIndex = (index) => {
     return items[index];
+  };
+  const connectWalletChange = () => {
+    console.log("account==", account);
+    if (!account) {
+      connectWallet();
+    }
   };
   useEffect(() => {
     initData();
@@ -59,7 +68,10 @@ const HeaderPage: React.FC = () => {
         </Dropdown.Button>
       </div>
       <div className="option">
-        <Button type="primary">链接钱包</Button>
+        <Button type="primary" onClick={() => connectWalletChange()}>
+          {" "}
+          {account ? formatAddress(account) : "连接钱包"}
+        </Button>
       </div>
     </div>
   );

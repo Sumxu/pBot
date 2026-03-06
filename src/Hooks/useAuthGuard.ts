@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { storage } from "@/Hooks/useLocalStorage";
 import { useNavigate, useLocation } from "react-router-dom";
 import { isWalletConnected } from "@/Hooks/useWalletStatus";
-import { ensureWalletConnected } from "@/Hooks/WalletHooks";
+import { ensureWalletConnected } from "@/Hooks/walletHooks/wallet";
 import { userAddress } from "@/Store/chainStore";
 
 export function useAuthGuard() {

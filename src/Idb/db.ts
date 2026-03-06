@@ -7,11 +7,11 @@ export const dbPromise = openDB("appDB", 1, {
       // 创建钱包表
       const walletStore = db.createObjectStore("wallet", {
         keyPath: "id", // 主键
+        autoIncrement: true,
       });
       // 创建钱包索引
       walletStore.createIndex("address", "address");
       walletStore.createIndex("tag", "tag");
-
       //创建全局设置表
       const globalStore = db.createObjectStore("global", {
         keyPath: "id", // 主键
