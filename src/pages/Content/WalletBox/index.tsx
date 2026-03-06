@@ -23,8 +23,9 @@ import {
   getByTag,
   getWalletByAddress,
 } from "@/Idb/Servers/walletService";
-import {checkValue } from "@/Hooks/Utils";
+import { checkValue } from "@/Hooks/Utils";
 import { BigNumber } from "ethers";
+import { CSVLink } from "react-csv";
 interface walletItem {
   id: number;
   address: string; //地址
@@ -35,8 +36,16 @@ interface walletItem {
   saleOriginalTokenBalance: BigNumber; //可卖出余额
 }
 const WalletBox: React.FC = () => {
+  const exportHeaders = [
+    { label: "地址", key: "address" },
+    { label: "BNB余额", key: "originalTokenBalance" },
+    { label: "代币余额", key: "esc20Balance" },
+    { label: "私钥", key: "privateKey" },
+    { label: "标签", key: "tag" },
+  ];
   const [generateDialogOpen, setGenerateDialogOpen] = useState<boolean>(false); //是否展示 创建钱包弹窗
   const [importWalletOpen, setImportWalletOpen] = useState<boolean>(false); //是否展示 导入钱包弹窗
+  const [exportLoading, setExportLoading] = useState<boolean>(false); //是否展示 导入钱包弹窗
   const [pageSize, setPageSize] = useState<number>(10); //每次查询对应多少条数据
   const [current, setCurrent] = useState<number>(1); //当前查询的第几页数据
   const [total, setTotal] = useState<number>(0); //钱包总数
@@ -143,7 +152,7 @@ const WalletBox: React.FC = () => {
     initData();
     initTagList();
   };
-   //导入钱包成功
+  //导入钱包成功
   const importWalletSuccess = () => {
     setImportWalletOpen(false);
     initData();
@@ -196,6 +205,7 @@ const WalletBox: React.FC = () => {
   const initData = async () => {
     // const walletList = await getWalletPage(current, pageSize);
     const walletList = await getAllWallet();
+    console.log("walletList==", walletList);
     setDataSource(walletList);
   };
   /**
@@ -221,11 +231,12 @@ const WalletBox: React.FC = () => {
       value: tag,
     }));
   };
+  const exportChange = () => {};
   /**
    * 通过查询条件获取对应的钱包数据列表
    */
   const searchTableChange = async () => {
-    console.log("walletAddress==",walletAddress)
+    console.log("walletAddress==", walletAddress);
     //只查询钱包地址只有一个结果
     if (checkValue(walletAddress?.trim())) {
       //钱包有内容
@@ -340,11 +351,22 @@ const WalletBox: React.FC = () => {
         </div>
         <div className="tableBox">
           <div className="toolsOption">
-            <Button type="primary" onClick={()=>setImportWalletOpen(true)}>导入钱包</Button>
+            <Button type="primary" onClick={() => setImportWalletOpen(true)}>
+              导入钱包
+            </Button>
             <Button type="primary" onClick={openGenerate}>
               生成钱包
             </Button>
-            <Button type="primary">导出钱包</Button>
+            <CSVLink
+              data={dataSource}
+              headers={exportHeaders}
+              filename="钱包地址.csv"
+                uFEFF={true}
+            >
+              <Button type="primary">
+                导出钱包
+              </Button>
+            </CSVLink>
             <Popconfirm
               title={checkAllTitle}
               description={checkAllDescription}
@@ -413,10 +435,11 @@ const WalletBox: React.FC = () => {
         onCancel={() => setGenerateDialogOpen(false)}
         onOk={generateSuccess}
       />
-      <ImportWallet open={importWalletOpen} 
-      onOk={importWalletSuccess}
-      onCancel={()=>setImportWalletOpen(false)} />
-
+      <ImportWallet
+        open={importWalletOpen}
+        onOk={importWalletSuccess}
+        onCancel={() => setImportWalletOpen(false)}
+      />
     </div>
   );
 };

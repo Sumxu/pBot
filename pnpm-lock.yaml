@@ -86,6 +86,9 @@ importers:
       react-area-linkage:
         specifier: ^3.0.0
         version: 3.0.0(area-data@5.0.6)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      react-csv:
+        specifier: ^2.2.2
+        version: 2.2.2
       react-distpicker:
         specifier: ^1.0.2
         version: 1.0.2
@@ -3062,6 +3065,9 @@ packages:
       area-data: '>=5.0.6'
       react: '>= 15.0.0'
       react-dom: '>=15.0.0'
+
+  react-csv@2.2.2:
+    resolution: {integrity: sha512-RG5hOcZKZFigIGE8LxIEV/OgS1vigFQT4EkaHeKgyuCbUAu9Nbd/1RYq++bJcJJ9VOqO/n9TZRADsXNDR4VEpw==}
 
   react-distpicker@1.0.2:
     resolution: {integrity: sha512-HlH+IjkjK82lyHHv94fjJ8x5t7Yf3ARTNsO4VRQe+gDdegjeEE65amaTbRH4iH7Qdi2SWBNaQtaOVPtZpi2oiQ==}
@@ -7435,6 +7441,8 @@ snapshots:
       prop-types: 15.8.1
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
+
+  react-csv@2.2.2: {}
 
   react-distpicker@1.0.2:
     dependencies:
