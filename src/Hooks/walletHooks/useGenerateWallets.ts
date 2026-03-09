@@ -10,7 +10,6 @@ export interface WalletInfo {
 export const useGenerateWallets = () => {
   const [wallets, setWallets] = useState<WalletInfo[]>([]);
   const [generateLoading, setGenerateLoading] = useState(false);
-
   /**
    * 生成钱包
    * @param count 生成数量

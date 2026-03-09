@@ -5,9 +5,15 @@ import { Divider, Tag, Input, Button, Select, Col, Row, Empty } from "antd";
 import { RedoOutlined } from "@ant-design/icons";
 import chainListData from "@/config/chainListData";
 import { useChainStore } from "@/Store/chainStore";
+import { useMultiCall } from "@/Hooks/useMultiCallToken";
+import { fromWei } from "@/Hooks/Utils";
 const SilderBox: React.FC = () => {
+  const { multiCall } = useMultiCall(
+    "https://bsc-dataseed.binance.org/",
+    "0xca11bde05977b3631167028862be2a173976ca11", // BSC Multicall
+  );
   const [originTokenData, setOriginTokenData] = useState([]); //链对应的原生代币
-  const {chainId,setChainId}=useChainStore()
+  const { chainId, setChainId } = useChainStore();
   const [pondList, setPondList] = useState([
     {
       label: "Uniswap V2",
@@ -16,13 +22,104 @@ const SilderBox: React.FC = () => {
       balanceOf: "3.77",
     },
   ]);
-  const initData = () => {
-    console.log("chainListData==", chainListData);
-    // setOriginTokenData(chainListData[0]);
+
+  const initData = async () => {
+    const factoryAbi = [
+      "function getPair(address tokenA, address tokenB) external view returns (address pair)",
+    ];
+    const calls: any[] = [
+      {
+        address: "0xca143ce32fe78f1f7019d7d551a6402fc5350c73",
+        abi: factoryAbi,
+        method: "getPair",
+        params: [
+          "0x80F1fF15B887CB19295D88C8c16F89d47f6D8888",
+          // "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c",wbnb
+          "0x55d398326f99059fF775485246999027B3197955", //usdt
+        ],
+      },
+    ];
+
+    const res = await multiCall(calls);
+    const pairAddress = res[0][0];
+    console.log("res==", res);
+    console.log("respairAddress==", pairAddress);
+    initPairAddressInfo(pairAddress);
   };
-  useEffect(()=>{
-    console.log("chainId监听改变了----",chainId)
-  },[chainId])
+  const initPairAddressInfo = async (pairAddress: string) => {
+    const USDT = "0x55d398326f99059fF775485246999027B3197955";
+    const pairAbi = [
+      "function token0() view returns (address)",
+      "function token1() view returns (address)",
+      "function getReserves() view returns (uint112 reserve0,uint112 reserve1,uint32)",
+    ];
+    
+    const pairCalls = [
+      {
+        address: pairAddress,
+        abi: pairAbi,
+        method: "token0",
+      },
+      {
+        address: pairAddress,
+        abi: pairAbi,
+        method: "token1",
+      },
+      {
+        address: pairAddress,
+        abi: pairAbi,
+        method: "getReserves",
+      },
+      {
+        address: pairAddress,
+        abi: pairAbi,
+        method: "totalSupply",
+      },
+    ];
+
+    const res = await multiCall(pairCalls);
+    const token0 = res[0][0];
+    const token1 = res[1][0];
+    const totalSupplyAmount = Number(fromWei(res[3]));
+
+    console.log("res=totalSupplyAmount=", totalSupplyAmount);
+    console.log("res=totalSupplyAmount=", res);
+    const reserve0 = res[2][0];
+    const reserve1 = res[2][1];
+    console.log("res=token0=", token0);
+    console.log("token1=1=", token1);
+    console.log("reserve0=1=", reserve0);
+    console.log("reserve1=1=", reserve1);
+    let tokenReserve;
+    let usdtReserve;
+    if (token0.toLowerCase() === USDT.toLowerCase()) {
+      usdtReserve = reserve0;
+      tokenReserve = reserve1;
+    } else if (token1.toLowerCase() === USDT.toLowerCase()) {
+      usdtReserve = reserve1;
+      tokenReserve = reserve0;
+    } else {
+      throw new Error("池子不包含 USDT");
+    }
+    const usdtAmount = Number(fromWei(usdtReserve));
+    const tokenAmount = Number(fromWei(tokenReserve));
+    // 代币价格（USDT）
+    const tokenPriceUSDT = usdtAmount / tokenAmount; 
+    console.log(`池子的代币价格:`,tokenPriceUSDT);
+    console.log(`池子的代币数量:`,tokenAmount);
+    //代币占比
+    const tokenRato=tokenAmount/totalSupplyAmount
+    console.log(`tokenRato 占比:`,tokenRato);
+    // 假设 tokenPriceUSDT 已经知道
+    const tokenValueInUSDT = tokenAmount * tokenPriceUSDT;
+    console.log("=池子usdt数量=",tokenValueInUSDT)
+      // 外部可提 USDT（假设全部 LP 已锁定，外部可提 = 0）
+    console.log("=外部可掏池子=",usdtAmount)
+
+  };
+  useEffect(() => {
+    console.log("chainId监听改变了----", chainId);
+  }, [chainId]);
   useEffect(() => {
     initData();
   }, []);

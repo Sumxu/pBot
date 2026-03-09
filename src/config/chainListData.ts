@@ -6,7 +6,7 @@ import ethIcon from "@/assets/chainListIcon/eth.svg";
 import monadIcon from "@/assets/chainListIcon/monad.svg";
 import morphIcon from "@/assets/chainListIcon/morph.svg";
 import okxIcon from "@/assets/chainListIcon/okx.svg";
-
+import pairABI  from "@/Contract/ABI/PairABI";
 const devChain = [
   {
     chainConfigId: 98,
@@ -15,11 +15,13 @@ const devChain = [
     rpcUrl: "https://bsc-testnet-rpc.publicnode.com/",
     chainId: "0x61",
     chainName: "BNB Chain",
+    abi:pairABI,
+    factory:'0xca143ce32fe78f1f7019d7d551a6402fc5350c73',//薄饼abi
     baseToken: [
       {
         label: "BNB",
         value: "Wrapped BNB",
-        address: "",
+        address: "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c",
       },
       {
         label: "USDT",

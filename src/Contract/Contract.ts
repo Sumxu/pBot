@@ -3,7 +3,7 @@ import EnvManager from "@/config/EnvManager.ts";
 import VailPlusNodeABI from "./ABI/VailPlusNodeABI.ts";
 import VailPlusUserABI from "./ABI/VailPlusUserABI.ts";
 import VailPlusPoolABI from "./ABI/VailPlusPoolABI.ts";
-import SwapRouterABI from "./ABI/SwapRouterABI.ts";
+import SwapRouterABI from "./ABI/PairABI.ts";
 interface ContractItem {
   address: string;
   abi: any[]; // 或具体ABI类型
