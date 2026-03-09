@@ -361,11 +361,9 @@ const WalletBox: React.FC = () => {
               data={dataSource}
               headers={exportHeaders}
               filename="钱包地址.csv"
-                uFEFF={true}
+              uFEFF={true}
             >
-              <Button type="primary">
-                导出钱包
-              </Button>
+              <Button type="primary">导出钱包</Button>
             </CSVLink>
             <Popconfirm
               title={checkAllTitle}
