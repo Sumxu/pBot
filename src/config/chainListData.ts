@@ -6,17 +6,22 @@ import ethIcon from "@/assets/chainListIcon/eth.svg";
 import monadIcon from "@/assets/chainListIcon/monad.svg";
 import morphIcon from "@/assets/chainListIcon/morph.svg";
 import okxIcon from "@/assets/chainListIcon/okx.svg";
-import pairABI  from "@/Contract/ABI/PairABI";
+import pairABI from "@/Contract/ABI/PairABI";
+import erc20ABI from "@/Contract/ABI/Erc20";
+import factoryAbi from "@/Contract/ABI/FactoryAbi";
 const devChain = [
   {
     chainConfigId: 98,
     label: "BSC",
     icon: bscIcon,
-    rpcUrl: "https://bsc-testnet-rpc.publicnode.com/",
+    rpcUrl: "https://bsc-dataseed.binance.org/",
     chainId: "0x61",
     chainName: "BNB Chain",
-    abi:pairABI,
-    factory:'0xca143ce32fe78f1f7019d7d551a6402fc5350c73',//薄饼abi
+    pairAbi: pairABI,
+    erc20: erc20ABI,
+    factoryAbi: factoryAbi,
+    multiCallAddress: "0xca11bde05977b3631167028862be2a173976ca11",
+    factoryAddress: "0xca143ce32fe78f1f7019d7d551a6402fc5350c73", //薄饼abi //可以查询出合约地址的信息
     baseToken: [
       {
         label: "BNB",
@@ -26,34 +31,36 @@ const devChain = [
       {
         label: "USDT",
         value: "Tether USD",
-        address: "",
+        address: "0x55d398326f99059fF775485246999027B3197955",
       },
       {
         label: "USDC",
         value: "USD Coin",
-        address: "",
+        address: "0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d",
       },
       {
         label: "USD1",
         value: "USD1",
-        address: "",
+        address: "0x8d0d000ee44948fc98c9b98a4fa4921476f08b0d",
       },
       {
         label: "FIST",
         value: "FIST",
-        address: "",
+        address: "0xc9849e6fdB743d08fA48f4cD6d2A977c1C7E3cE4",
       },
       {
         label: "ASTER",
         value: "ASTER",
-        address: "",
-      },
-      {
-        label: "COIN",
-        value: "COIN",
-        address: "",
-      },
+        address: "0x9a0a2c0f9dC7cF6F2a444ef322a32956543d4d6F",
+      }
     ],
+    pondList: [
+      {
+        label: "Uniswap V2",
+        value: "Uniswap V2",
+        type: "v2",
+      },
+    ], //池子固定数据
   },
   {
     chainConfigId: 1,

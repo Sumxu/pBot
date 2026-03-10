@@ -1,6 +1,7 @@
 import { message } from "antd";
 import { ethers, BigNumber } from "ethers";
 import { t } from "i18next";
+
 export interface ParsedWallet {
   privateKey: string;
   tag?: string;
@@ -57,7 +58,29 @@ export function isValidAddress(addr?: string): boolean {
     return false;
   }
 }
+/**
+ * 是否是合约
+ */
+export async function isContractAddress(
+  addr?: string,
+  RPC_URL?: string,
+): Promise<boolean> {
+  if (!addr) return false;
 
+  const provider = new ethers.providers.JsonRpcProvider(RPC_URL);
+  // 1 校验地址格式
+  if (!ethers.utils.isAddress(addr)) return false;
+  
+  try {
+    // 2 获取地址代码
+    const code = await provider.getCode(addr);
+
+    // 3 判断是否是合约
+    return code !== "0x";
+  } catch {
+    return false;
+  }
+}
 /**
  * 将最小单位（如 wei）转换为人类可读的格式（如 ETH）
  * @param value 要转换的值，可以是 string | number | bigint
@@ -452,7 +475,7 @@ export const isValidPrivateKey = (key: string) => {
  * 2. 私钥,标签
  * 3. CSV 格式
  */
- export const parseWalletInput = (input: string): ParsedWallet[] => {
+export const parseWalletInput = (input: string): ParsedWallet[] => {
   if (!input) return [];
 
   return input
@@ -476,7 +499,6 @@ export const isValidPrivateKey = (key: string) => {
         privateKey,
         address: wallet.address,
         tag: tag || undefined,
-        
       };
     })
     .filter(Boolean) as ParsedWallet[];
