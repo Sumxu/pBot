@@ -2,10 +2,10 @@ import React, { useState } from "react";
 import "./index.scss";
 import { useEffect } from "react";
 import { Divider, Tag, Input, Button, Select, Col, Row, Empty } from "antd";
-import { RedoOutlined } from "@ant-design/icons";
 import { useChainStore } from "@/Store/chainStore";
-import { useMultiCall } from "@/Hooks/useMultiCallToken";
-import { fromWei, isContractAddress, Totast } from "@/Hooks/Utils";
+import { isContractAddress, Totast } from "@/Hooks/Utils";
+import Logs from "./components/logs";
+import OriginTokenInfo from "./components/originTokenInfo";
 import {
   findChainById,
   findContractInfo,
@@ -22,7 +22,8 @@ interface pondListItem {
   value: string;
 }
 const SilderBox: React.FC = () => {
-  const { chainId, setChainId } = useChainStore(); //全局获取监听
+  const { chainId, setChainId, setOriginTokenName } = useChainStore(); //全局获取监听
+  const [findDataLoading, setFindDataLoading] = useState<boolean>(false); //代币信息加载中
   const [originTokenData, setOriginTokenData] = useState<originTokenDataItem[]>(
     [],
   ); //链对应的原生代币
@@ -32,7 +33,9 @@ const SilderBox: React.FC = () => {
   const [originTokenDataDisabled, setOriginTokenDataDisabled] =
     useState<boolean>(false); //是否禁用币种选择
   const [pondListDisabled, setPondListDisabled] = useState<boolean>(false); //是否禁用池子选择
-  const [searchAddress, setSearchAddress] = useState<string>('0x80F1fF15B887CB19295D88C8c16F89d47f6D8888'); //查询合约地址
+  const [searchAddress, setSearchAddress] = useState<string>(
+    "0x80F1fF15B887CB19295D88C8c16F89d47f6D8888",
+  ); //查询合约地址
   const [originToken, setOriginToken] = useState<string>(); //原始代币地址
   const [pondType, setPondType] = useState<string>(); //选择的池子类型
   const [rpcUrl, setRpcUrl] = useState<string>(); //rpc地址
@@ -60,9 +63,31 @@ const SilderBox: React.FC = () => {
       return Totast(`${searchAddress}当前不是合约地址`, "error");
     if (!originToken) return Totast(`请选择合约对应的基础代币`, "error");
     if (!pondType) return Totast(`请选择合约对应的池子`, "error");
-    const originTokenInfo = findListData(originTokenData, originToken);
-    const pondInfo = findListData(pondList, pondType);
-    findContractInfo(searchAddress, pondInfo.type, originTokenInfo.address,chainId);
+    const originTokenInfo = findListData(originTokenData,'value', originToken);
+    const pondInfo = findListData(pondList,'value',pondType);
+    try {
+      setFindDataLoading(true);
+      await findContractInfo(
+        searchAddress,
+        pondInfo.type,
+        originTokenInfo.address,
+        chainId,
+      );
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setFindDataLoading(false);
+    }
+  };
+  /**
+   *
+   * @param originValue 原始代币值
+   */
+  const originTokenChange = (originValue) => {
+    setOriginToken(originValue);
+    const originTokenInfo = findListData(originTokenData, 'value',originValue);
+    console.log("originTokenInfo==", originTokenInfo);
+    setOriginTokenName(originTokenInfo.label);
   };
   useEffect(() => {
     console.log("chainId监听改变了----", chainId);
@@ -116,7 +141,7 @@ const SilderBox: React.FC = () => {
               placeholder="请选择原始代币"
               value={originToken}
               onChange={(value, option) => {
-                setOriginToken(option.value);
+                originTokenChange(option.value);
               }}
               disabled={originTokenDataDisabled}
               options={originTokenData}
@@ -173,6 +198,7 @@ const SilderBox: React.FC = () => {
         <div>
           <Button
             type="primary"
+            loading={findDataLoading}
             style={{ width: "100%" }}
             onClick={() => getTokenInfo()}
           >
@@ -190,74 +216,7 @@ const SilderBox: React.FC = () => {
       >
         代币信息
       </Divider>
-      <div className="tokenInfoBox">
-        <div className="autoTimeOption">
-          <div className="labelTxt">
-            自动刷新:3秒 <span className="spn">刷新中</span>
-          </div>
-          <Button type="primary" icon={<RedoOutlined />}>
-            手动刷新
-          </Button>
-        </div>
-        <div className="tokenInfoTagBox">
-          <Row className="tokenInfoRow">
-            <Col span={8}>
-              <div className="tagOption">
-                <div className="label">代币价格</div>
-                <div className="value">0.2222222222</div>
-              </div>
-            </Col>
-            <Col span={8}>
-              <div className="tagOption tagInline">
-                <div className="label">池子 BNB 余额</div>
-                <div className="value">0.2222</div>
-              </div>
-            </Col>
-            <Col span={8}>
-              <div className="tagOption">
-                <div className="label">可掏池子 BNB 数量</div>
-                <div className="value">0.2222</div>
-              </div>
-            </Col>
-          </Row>
-
-          <Row className="tokenInfoRow">
-            <Col span={8}>
-              <div className="tagOption">
-                <div className="label">外部可掏池子 BNB 数量</div>
-                <div className="value">0.2222</div>
-              </div>
-            </Col>
-            <Col span={8}>
-              <div className="tagOption tagInline">
-                <div className="label">持有 BNB 数量</div>
-                <div className="value">0.2222</div>
-              </div>
-            </Col>
-            <Col span={8}>
-              <div className="tagOption">
-                <div className="label">持有代币数量</div>
-                <div className="value">0.2222</div>
-              </div>
-            </Col>
-          </Row>
-
-          <Row className="tokenInfoRow">
-            <Col span={8}>
-              <div className="tagOption">
-                <div className="label">持有代币比例</div>
-                <div className="value">0.2222%</div>
-              </div>
-            </Col>
-            <Col span={8}>
-              <div className="tagOption tagInline">
-                <div className="label">池子代币占比</div>
-                <div className="value">0.2222%</div>
-              </div>
-            </Col>
-          </Row>
-        </div>
-      </div>
+      <OriginTokenInfo></OriginTokenInfo>
       <Divider
         orientation="center"
         style={{
@@ -268,15 +227,7 @@ const SilderBox: React.FC = () => {
       >
         日志
       </Divider>
-      <div className="logBox">
-        <div className="logOption">
-          <div className="tagLine"></div>
-          <div className="tagName">正在监听</div>
-        </div>
-        <div className="dataBox">
-          <Empty description="暂无数据" />
-        </div>
-      </div>
+      <Logs></Logs>
     </div>
   );
 };

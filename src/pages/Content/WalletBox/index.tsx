@@ -26,6 +26,8 @@ import {
 import { checkValue } from "@/Hooks/Utils";
 import { BigNumber } from "ethers";
 import { CSVLink } from "react-csv";
+import { useChainStore } from "@/Store/chainStore";
+import { totalWalletBalance } from "@/Utils/walletBalance";
 interface walletItem {
   id: number;
   address: string; //地址
@@ -36,9 +38,10 @@ interface walletItem {
   saleOriginalTokenBalance: BigNumber; //可卖出余额
 }
 const WalletBox: React.FC = () => {
+  const { originTokenName, chainId } = useChainStore();
   const exportHeaders = [
     { label: "地址", key: "address" },
-    { label: "BNB余额", key: "originalTokenBalance" },
+    { label: `${originTokenName}余额`, key: "originalTokenBalance" },
     { label: "代币余额", key: "esc20Balance" },
     { label: "私钥", key: "privateKey" },
     { label: "标签", key: "tag" },
@@ -91,7 +94,7 @@ const WalletBox: React.FC = () => {
       width: 370,
     },
     {
-      title: "BNB余额",
+      title: `${originTokenName}余额`,
       dataIndex: "originalTokenBalance",
       key: "originalTokenBalance",
     },
@@ -101,7 +104,7 @@ const WalletBox: React.FC = () => {
       key: "esc20Balance",
     },
     {
-      title: "可卖BNB",
+      title: `可卖${originTokenName}`,
       dataIndex: "saleOriginalTokenBalance",
       key: "saleOriginalTokenBalance",
     },
@@ -205,7 +208,7 @@ const WalletBox: React.FC = () => {
   const initData = async () => {
     // const walletList = await getWalletPage(current, pageSize);
     const walletList = await getAllWallet();
-    console.log("walletList==", walletList);
+    console.log("walletList=1=", walletList);
     setDataSource(walletList);
   };
   /**
@@ -231,12 +234,13 @@ const WalletBox: React.FC = () => {
       value: tag,
     }));
   };
-  const exportChange = () => {};
   /**
    * 通过查询条件获取对应的钱包数据列表
    */
   const searchTableChange = async () => {
     console.log("walletAddress==", walletAddress);
+    await totalWalletBalance(originTokenName);
+
     //只查询钱包地址只有一个结果
     if (checkValue(walletAddress?.trim())) {
       //钱包有内容

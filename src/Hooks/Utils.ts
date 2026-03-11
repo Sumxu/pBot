@@ -70,7 +70,7 @@ export async function isContractAddress(
   const provider = new ethers.providers.JsonRpcProvider(RPC_URL);
   // 1 校验地址格式
   if (!ethers.utils.isAddress(addr)) return false;
-  
+
   try {
     // 2 获取地址代码
     const code = await provider.getCode(addr);
@@ -115,7 +115,6 @@ export function fromWei(
 
 function truncateDecimal(value: string, decimals: number): string {
   if (!value.includes(".")) return value;
-
   const [integer, fraction = ""] = value.split(".");
   const truncated = fraction.slice(0, decimals);
   return `${integer}.${truncated.padEnd(decimals, "0")}`;
@@ -180,9 +179,10 @@ export function Totast(
 }
 
 // 小数点截取
-export function DecSubt(Num: string, len: number) {
-  if (Num.indexOf(".") != -1) {
-    const NumArr = Num.split(".");
+export function DecSubt(Num: number, len: number) { 
+  const NumString = Num.toString();
+  if (NumString.indexOf(".") != -1) {
+    const NumArr = NumString.split(".");
     const Head = NumArr[0];
     const foot = NumArr[1];
     if (foot.length > len) {

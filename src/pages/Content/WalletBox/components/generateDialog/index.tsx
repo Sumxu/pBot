@@ -3,7 +3,7 @@ import "./index.scss";
 import { useEffect } from "react";
 import { Modal, Input, Form, InputNumber } from "antd";
 import { useGenerateWallets } from "@/Hooks/walletHooks/useGenerateWallets";
-import { addWalletsList } from "@/Idb/Servers/walletService";
+import { addOrUpdateWallets } from "@/Idb/Servers/walletService";
 import { BigNumber } from "ethers";
 interface Props {
   open: boolean;
@@ -24,7 +24,7 @@ const GenerateDialog: React.FC = ({ open, onCancel, onOk }) => {
       saleOriginalTokenBalance: 0,
     }));
     console.log("生成结果:", newList);
-    await addWalletsList(newList);
+    await addOrUpdateWallets(newList);
     onOk();
   };
   const walletNumChange = (e) => {

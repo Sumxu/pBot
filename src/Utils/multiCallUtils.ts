@@ -18,36 +18,38 @@ export async function multiCall(
 ) {
   try {
     const provider = new ethers.providers.JsonRpcProvider(rpcUrl);
-
-    const multicall = new ethers.Contract(
-      multicallAddress,
-      MULTICALL_ABI,
-      provider,
-    );
+    const multicall = new ethers.Contract(multicallAddress, MULTICALL_ABI, provider);
 
     const callData = calls.map((call) => {
       const iface = new ethers.utils.Interface(call.abi);
-
       return {
         target: call.address,
         callData: iface.encodeFunctionData(call.method, call.params || []),
       };
     });
 
-    const [, returnData] = await multicall.aggregate(callData);
+    const aggregateResult = await multicall.aggregate(callData);
 
+    // 兼容 v1/v2
+    const returnData: string[] = aggregateResult.returnData || aggregateResult[1];
+    if (!returnData || !Array.isArray(returnData)) {
+      console.error("multicall returned invalid data:", aggregateResult);
+      return [];
+    }
     const result = returnData.map((data: string, index: number) => {
       const call = calls[index];
       const iface = new ethers.utils.Interface(call.abi);
-
-      const decoded = iface.decodeFunctionResult(call.method, data);
-
-      return decoded;
+      try {
+        return iface.decodeFunctionResult(call.method, data);
+      } catch (err) {
+        console.error(`Failed to decode call ${call.method} at index ${index}:`, err);
+        return null;
+      }
     });
 
     return result;
   } catch (err) {
-    console.error("multicall error", err);
+    console.error("multicall error:", err);
     return [];
   }
 }

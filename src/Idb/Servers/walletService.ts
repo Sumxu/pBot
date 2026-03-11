@@ -1,20 +1,32 @@
 //钱包列表管理表
 import { dbPromise } from "../db";
-
 // 单个新增
 export async function addWallet(walletInfo: any) {
   const db = await dbPromise;
   return db.put("wallet", walletInfo);
 }
-//多个新增
-export async function addWalletsList(list: any[]) {
-  const db = await dbPromise;
-  const tx = db.transaction("wallet", "readwrite");
-  const store = tx.objectStore("wallet");
-  for (const item of list) {
-    store.put(item);
+/**
+ * 批量新增或修改钱包数据
+ * @param list 数组，每个元素是钱包对象，必须包含唯一 id 或 key
+ */
+export async function addOrUpdateWallets(list: any[]) {
+  if (!Array.isArray(list) || list.length === 0) return;
+
+  try {
+    const db = await dbPromise;
+    const tx = db.transaction("wallet", "readwrite");
+    const store = tx.objectStore("wallet");
+
+    for (const item of list) {
+      // put 会新增或覆盖已有记录
+      store.put(item);
+    }
+
+    await tx.done; // 等待事务完成
+    console.log(`成功写入/更新 ${list.length} 条钱包数据`);
+  } catch (err) {
+    console.error("批量写入钱包失败：", err);
   }
-  await tx.done; // 等待事务完成
 }
 // 查询
 export async function getWallet(id: number) {
@@ -27,7 +39,10 @@ export async function deleteWallet(id: number) {
   const db = await dbPromise;
   return db.delete("wallet", id);
 }
-
+/**
+ *
+ * @param ids 批量删除
+ */
 export async function deleteWalletsByIds(ids: number[]) {
   const db = await dbPromise;
 
@@ -78,7 +93,7 @@ export async function getWalletTotal() {
   const db = await dbPromise;
   return db.count("wallet");
 }
- export async function getAllWallet() {
+export async function getAllWallet() {
   const db = await dbPromise;
   const tx = db.transaction("wallet");
   const store = tx.objectStore("wallet");

@@ -1,7 +1,10 @@
 import chainListData from "@/config/chainListData";
 import { Totast, fromWei } from "@/Hooks/Utils";
 import { multiCall } from "@/Utils/multiCallUtils";
+import { useOriginTokenInfoStore } from "@/store/originTokenInfoStore";
 const isZeroAddress = "0x0000000000000000000000000000000000000000";
+import { useChainStore } from "@/Store/chainStore";
+const setPairAddress = useChainStore.getState().setPairAddress;
 /**
  *
  * @param chainId 链路id
@@ -13,11 +16,12 @@ export const findChainById = (chainId: number | string) => {
 /**
  *
  * @param list 数据源
+ * @param column 查询某个字段
  * @param value 条件值
  * @returns 返回数组的对象
  */
-export const findListData = (list, value) => {
-  return list.find((item) => item.value == value);
+export const findListData = (list, column, value) => {
+  return list.find((item) => item[column] == value);
 };
 /**
  *
@@ -27,7 +31,7 @@ export const findListData = (list, value) => {
  * @param chainId 链路id
  * 查询对应的池子
  */
-export const findContractInfo = (
+export const findContractInfo = async (
   contractAddress,
   type,
   originTokenAddress,
@@ -39,7 +43,11 @@ export const findContractInfo = (
   switch (type) {
     case "v2":
       //v2的查询
-      findUniswapV2Info(contractAddress, originTokenAddress, chainId);
+      return await findUniswapV2Info(
+        contractAddress,
+        originTokenAddress,
+        chainId,
+      );
       break;
   }
 };
@@ -64,15 +72,14 @@ const findUniswapV2Info = async (
     originTokenAddress,
     contractAddress,
   );
+  await setPairAddress(pairAddress);
   //通过pair地址查询出对应的代币信息
-  const pairInfoData = await pairAddressInfoByAddress(
+  await pairAddressInfoByAddress(
     pairAddress,
     chainData,
     originTokenAddress,
     contractAddress,
   );
-  console.log("pairInfoData===", pairInfoData);
-  return pairInfoData;
 };
 /**
  * 查询对应的pair地址
@@ -163,7 +170,9 @@ const pairAddressInfoByAddress = async (
       throw new Error("池子不包含当前选中的代币");
     }
   } catch (error) {}
+
   const usdtAmount = Number(fromWei(usdtReserve));
+  //池子的代币数量
   const tokenAmount = Number(fromWei(tokenReserve));
   // 代币价格（USDT）
   const tokenPriceUSDT = usdtAmount / tokenAmount;
@@ -172,9 +181,10 @@ const pairAddressInfoByAddress = async (
   console.log("代币价格==", tokenPriceUSDT);
   console.log("池子代币占比==", tokenRato);
   console.log("池子usdt价格==", usdtAmount);
-  return {
+  useOriginTokenInfoStore.getState().setTokenInfo({
     tokenRato: tokenRato,
     tokenPrice: tokenPriceUSDT,
     usdtAmount: usdtAmount,
-  };
+    tokenAmount: tokenAmount,
+  });
 };

@@ -7,8 +7,9 @@ import monadIcon from "@/assets/chainListIcon/monad.svg";
 import morphIcon from "@/assets/chainListIcon/morph.svg";
 import okxIcon from "@/assets/chainListIcon/okx.svg";
 import pairABI from "@/Contract/ABI/PairABI";
-import erc20ABI from "@/Contract/ABI/Erc20";
-import factoryAbi from "@/Contract/ABI/FactoryAbi";
+import ERC20_ABI from "@/Contract/ABI/Erc20";
+import factoryAbi from "@/Contract/ABI/FactoryABI";
+import routerAbi from "@/Contract/ABI/RouterABI";
 const devChain = [
   {
     chainConfigId: 98,
@@ -18,9 +19,11 @@ const devChain = [
     chainId: "0x61",
     chainName: "BNB Chain",
     pairAbi: pairABI,
-    erc20: erc20ABI,
+    erc20: ERC20_ABI,
     factoryAbi: factoryAbi,
-    multiCallAddress: "0xca11bde05977b3631167028862be2a173976ca11",
+    swapRouterAddress: "0x10ED43C718714eb63d5aA57B78B54704E256024E",
+    swapRouterAbi: routerAbi,
+    multiCallAddress: "0x1Ee38d535d541c55C9dae27B12edf090C608E6Fb",
     factoryAddress: "0xca143ce32fe78f1f7019d7d551a6402fc5350c73", //薄饼abi //可以查询出合约地址的信息
     baseToken: [
       {
@@ -52,7 +55,7 @@ const devChain = [
         label: "ASTER",
         value: "ASTER",
         address: "0x9a0a2c0f9dC7cF6F2a444ef322a32956543d4d6F",
-      }
+      },
     ],
     pondList: [
       {
