@@ -14,6 +14,36 @@ const TokenTradingBox: React.FC = () => {
   const RouterOnChange = (value: string) => {
     console.log(`selected ${value}`);
   };
+  /**
+   * 买入
+   */
+  const buyChange=()=>{
+    
+  }
+  /**
+   * 比例买入
+   */
+  const buyRatoChange=()=>{
+
+  }
+  /**
+   * 买入卖出
+   */
+  const saleChange=()=>{
+
+  }
+  /**
+   * 开发者卖出
+   */
+  const developerSells=()=>{
+    
+  }
+  /**
+   * 跑路 就是全部卖掉
+   */
+  const allSaleChange=()=>{
+
+  }
   useEffect(() => {
     console.log("tokenTradingData=", tokenTradingData);
   }, []);
@@ -181,7 +211,10 @@ const TokenTradingBox: React.FC = () => {
           <div className="contentOption">
             <div className="fromOption">
               <Form.Item labelCol={{ flex: "120px" }} label="捆绑钱包">
-                <Input placeholder="请输入捆绑数量" className="inputAuto" />
+                <InputNumber 
+                value={bindWalletNums}
+                onChange={(e)=>setBindWalletNums(e)}
+                placeholder="请输入捆绑数量" className="inputAuto" />
               </Form.Item>
             </div>
           </div>
@@ -231,17 +264,17 @@ const TokenTradingBox: React.FC = () => {
           <div className="contentOption">
             <div className="fromOption">
               <div className="btnBox">
-                <Button type="primary">买入(0)</Button>
-                <Button type="primary" className="btnMargin">
+                <Button type="primary" onClick={()=>buyChange()}>买入(0)</Button>
+                <Button type="primary" onClick={()=>buyRatoChange()} className="btnMargin">
                   比例买入(0)
                 </Button>
-                <Button type="primary" danger className="btnMargin">
+                <Button type="primary" danger className="btnMargin" onClick={()=>saleChange()}>
                   买入卖出(0)
                 </Button>
-                <Button type="primary" danger className="btnMargin">
+                <Button type="primary" danger className="btnMargin" onClick={()=>developerSells()}>
                   开发者卖出(0)
                 </Button>
-                <Button type="primary">跑路</Button>
+                <Button type="primary" onClick={()=>allSaleChange()}>跑路</Button>
               </div>
             </div>
           </div>
