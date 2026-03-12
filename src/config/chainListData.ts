@@ -10,6 +10,7 @@ import pairABI from "@/Contract/ABI/PairABI";
 import ERC20_ABI from "@/Contract/ABI/Erc20";
 import factoryAbi from "@/Contract/ABI/FactoryABI";
 import routerAbi from "@/Contract/ABI/RouterABI";
+import multiCallAbi from "@/Contract/ABI/MultiCallABI";
 const devChain = [
   {
     chainConfigId: 98,
@@ -20,6 +21,7 @@ const devChain = [
     chainName: "BNB Chain",
     pairAbi: pairABI,
     erc20: ERC20_ABI,
+    multiCallAbi: multiCallAbi,
     factoryAbi: factoryAbi,
     swapRouterAddress: "0x10ED43C718714eb63d5aA57B78B54704E256024E",
     swapRouterAbi: routerAbi,

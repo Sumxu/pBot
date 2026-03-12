@@ -4,8 +4,14 @@ import { getGlobal, updateGlobal } from "@/Idb/Servers/globalService";
 //链路的监听
 interface ChainState {
   chainId: number; //链Id
-  originTokenName: string;//代币名称
-  pairAddress:string;//lp池地址
+  originTokenName: string; //代币名称
+  pairAddress: string; //lp池地址
+  trigger: number; // 事件触发器
+  timeTrigger: number; // 事件触发器
+  searchAddress: string; //查询的合约
+  setSearchAddressStore:(searchAddress:string)=>void;//查询的合约地址事件
+  triggerEvent: () => void; // 钱包刷新触发事件
+  setAutoTriggerEvent: () => void; //自动刷新出发事件
   setOriginTokenName: (originTokenName: string) => void;
   setPairAddress: (pairAddress: string) => void;
   setChainId: (chain: number) => void;
@@ -13,17 +19,28 @@ interface ChainState {
 }
 export const useChainStore = create<ChainState>((set, get) => ({
   chainId: 0, //链Id
-  originTokenName:'-',//代币名称
-  pairAddress:'-',//lp地址
-  setPairAddress:async(pairAddress :string)=>{
-     set({ pairAddress });
+  originTokenName: "-", //代币名称
+  pairAddress: "-", //lp地址
+  trigger: 0,
+  timeTrigger: 0,
+  searchAddress: "",
+  setSearchAddressStore: async (searchAddress: string) => {
+    set({ searchAddress });
   },
-  setOriginTokenName:async(originTokenName :string)=>{
-     set({ originTokenName });
+  triggerEvent: () => {
+    set({ trigger: Date.now() }); // 每次改变 trigger
+  },
+  setAutoTriggerEvent: () => {
+    set({ timeTrigger: Date.now() }); // 每次改变 timeTrigger
+  },
+  setPairAddress: async (pairAddress: string) => {
+    set({ pairAddress });
+  },
+  setOriginTokenName: async (originTokenName: string) => {
+    set({ originTokenName });
   },
   // ✅ 设置链 + 同步数据库
   setChainId: async (chainId: number) => {
-    console.log("chainId---储存的内容", chainId);
     // 1️⃣ 更新内存状态
     set({ chainId });
     // 2️⃣ 写入 IndexedDB
@@ -33,7 +50,6 @@ export const useChainStore = create<ChainState>((set, get) => ({
         chainConfigId: chainId,
       },
     );
-    console.log("chainId 已同步到 DB:", chainId);
   },
   initChainId: async () => {
     if (inited) return; // 已经初始化过

@@ -1,11 +1,22 @@
 import React, { useState } from "react";
 import "./index.scss";
 import { useEffect } from "react";
-import { Button, Card, Form, Input, Select, Divider } from "antd";
+import { Button, Card, Form, Input, Select, Divider, InputNumber } from "antd";
+import tokenTradingData from "@/config/tokenTradingData";
 const TokenTradingBox: React.FC = () => {
+  const [minAmount, setMinAmout] = useState<number>(); //最小买入金额
+  const [maxAmount, setMaxAmount] = useState<number>(); //最大买入金额
+  const [buyRato, setBuyRato] = useState<number>(); //买入比例0-90
+  const [saleBuyRato, setSaleBuyRato] = useState<number>(); //卖出比例0-100
+  const [minTimeOut, setMinTimeOut] = useState<number>(); //最小延迟
+  const [maxTimeOut, setMaxTimeOut] = useState<number>(); //最大延迟
+  const [bindWalletNums, setBindWalletNums] = useState<number>(); //捆绑钱包数量
   const RouterOnChange = (value: string) => {
     console.log(`selected ${value}`);
   };
+  useEffect(() => {
+    console.log("tokenTradingData=", tokenTradingData);
+  }, []);
   return (
     <div className="tokenTradingBox">
       <Card bodyStyle={{ padding: 14 }}>
@@ -24,25 +35,45 @@ const TokenTradingBox: React.FC = () => {
           <div className="contentOption">
             <div className="fromOption">
               <Form.Item label="最小买入金额" labelCol={{ flex: "120px" }}>
-                <Input placeholder="请输入最小买入金额" className="inputBuy" />
+                <InputNumber
+                  placeholder="请输入最小买入金额"
+                  value={minAmount}
+                  className="inputBuy"
+                  onChange={(e) => setMinAmout(e.target.value)}
+                />
               </Form.Item>
               <div className="btnListOption">
-                <Button className="btnRight12">123</Button>
-                <Button className="btnRight12">123</Button>
-                <Button className="btnRight12">123</Button>
-                <Button className="btnRight12">123</Button>
+                {tokenTradingData.minBuyAmount.map((item) => {
+                  return (
+                    <Button
+                      className="btnRight12"
+                      onClick={() => setMinAmout(item)}
+                    >
+                      {item}
+                    </Button>
+                  );
+                })}
               </div>
             </div>
-
             <div className="fromOption">
               <Form.Item label="最大买入金额" labelCol={{ flex: "120px" }}>
-                <Input placeholder="请输入最大买入金额" className="inputBuy" />
+                <InputNumber
+                  placeholder="请输入最大买入金额"
+                  value={maxAmount}
+                  className="inputBuy"
+                />
               </Form.Item>
               <div className="btnListOption">
-                <Button className="btnRight12">123</Button>
-                <Button className="btnRight12">123</Button>
-                <Button className="btnRight12">123</Button>
-                <Button className="btnRight12">123</Button>
+                {tokenTradingData.maxBuyAmount.map((item) => {
+                  return (
+                    <Button
+                      className="btnRight12"
+                      onClick={() => setMaxAmount(item)}
+                    >
+                      {item}
+                    </Button>
+                  );
+                })}
               </div>
             </div>
           </div>
@@ -50,25 +81,51 @@ const TokenTradingBox: React.FC = () => {
           <div className="contentOption">
             <div className="fromOption">
               <Form.Item labelCol={{ flex: "120px" }} label="买入比例(0-90)">
-                <Input placeholder="请输入买入比例" className="inputBuy" />
+                <InputNumber
+                  placeholder="请输入买入比例"
+                  value={buyRato}
+                  min={0}
+                  max={90}
+                  onChange={(e) => setBuyRato(e.target.value)}
+                  className="inputBuy"
+                />
               </Form.Item>
               <div className="btnListOption">
-                <Button className="btnRight12">123</Button>
-                <Button className="btnRight12">123</Button>
-                <Button className="btnRight12">123</Button>
-                <Button className="btnRight12">123</Button>
+                {tokenTradingData.buyProportion.map((item) => {
+                  return (
+                    <Button
+                      className="btnRight12"
+                      onClick={() => setBuyRato(item)}
+                    >
+                      {item}
+                    </Button>
+                  );
+                })}
               </div>
             </div>
 
             <div className="fromOption">
               <Form.Item label="卖出比例(0-100)" labelCol={{ flex: "120px" }}>
-                <Input placeholder="请输入卖出比例" className="inputBuy" />
+                <InputNumber
+                  min={0}
+                  max={100}
+                  placeholder="请输入卖出比例"
+                  value={saleBuyRato}
+                  className="inputBuy"
+                  onChange={(e) => saleBuyRato(e.target.value)}
+                />
               </Form.Item>
               <div className="btnListOption">
-                <Button className="btnRight12">123</Button>
-                <Button className="btnRight12">123</Button>
-                <Button className="btnRight12">123</Button>
-                <Button className="btnRight12">123</Button>
+                {tokenTradingData.saleRatio.map((item) => {
+                  return (
+                    <Button
+                      className="btnRight12"
+                      onClick={() => setSaleBuyRato(item)}
+                    >
+                      {item}
+                    </Button>
+                  );
+                })}
               </div>
             </div>
           </div>
@@ -88,12 +145,22 @@ const TokenTradingBox: React.FC = () => {
           <div className="contentOption">
             <div className="fromOption">
               <Form.Item labelCol={{ flex: "120px" }} label="最小延迟(s)">
-                <Input placeholder="请输入最小延迟" className="inputAuto" />
+                <InputNumber
+                  placeholder="请输入最小延迟"
+                  className="inputAuto"
+                  value={minTimeOut}
+                  onChange={(e) => setMinTimeOut(e)}
+                />
               </Form.Item>
             </div>
             <div className="fromOption">
               <Form.Item labelCol={{ flex: "120px" }} label="最大延迟(s)">
-                <Input placeholder="请输入最大延迟" className="inputAuto" />
+                <Input
+                  placeholder="请输入最大延迟"
+                  value={maxTimeOut}
+                  className="inputAuto"
+                  onChange={(e) => setMaxTimeOut(e)}
+                />
               </Form.Item>
             </div>
           </div>

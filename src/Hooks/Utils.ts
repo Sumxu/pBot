@@ -503,3 +503,6 @@ export const parseWalletInput = (input: string): ParsedWallet[] => {
     })
     .filter(Boolean) as ParsedWallet[];
 };
+export function msToSeconds(ms: number): number {
+  return ms / 1000;
+}

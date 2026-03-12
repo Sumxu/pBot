@@ -22,7 +22,7 @@ interface pondListItem {
   value: string;
 }
 const SilderBox: React.FC = () => {
-  const { chainId, setChainId, setOriginTokenName } = useChainStore(); //全局获取监听
+  const { chainId,setOriginTokenName,setSearchAddressStore,timeTrigger,setAutoTriggerEvent} = useChainStore(); //全局获取监听
   const [findDataLoading, setFindDataLoading] = useState<boolean>(false); //代币信息加载中
   const [originTokenData, setOriginTokenData] = useState<originTokenDataItem[]>(
     [],
@@ -63,16 +63,21 @@ const SilderBox: React.FC = () => {
       return Totast(`${searchAddress}当前不是合约地址`, "error");
     if (!originToken) return Totast(`请选择合约对应的基础代币`, "error");
     if (!pondType) return Totast(`请选择合约对应的池子`, "error");
-    const originTokenInfo = findListData(originTokenData,'value', originToken);
-    const pondInfo = findListData(pondList,'value',pondType);
+    const originTokenInfo = findListData(originTokenData, "value", originToken);
+    const pondInfo = findListData(pondList, "value", pondType);
+    
     try {
       setFindDataLoading(true);
+      setSearchAddressStore(searchAddress)
       await findContractInfo(
         searchAddress,
         pondInfo.type,
         originTokenInfo.address,
         chainId,
       );
+      setSearchAddressDisabled(true);
+      setOriginTokenDataDisabled(true);
+      setPondListDisabled(true);
     } catch (error) {
       console.error(error);
     } finally {
@@ -85,14 +90,19 @@ const SilderBox: React.FC = () => {
    */
   const originTokenChange = (originValue) => {
     setOriginToken(originValue);
-    const originTokenInfo = findListData(originTokenData, 'value',originValue);
-    console.log("originTokenInfo==", originTokenInfo);
+    if(originValue==''||originValue==undefined)return
+    const originTokenInfo = findListData(originTokenData, "value", originValue);
     setOriginTokenName(originTokenInfo.label);
   };
   useEffect(() => {
     console.log("chainId监听改变了----", chainId);
     //通过chainId拿到对应的数据进行初始化
   }, [chainId]);
+   useEffect(() => {
+    console.log("timeTrigger监听改变了----", timeTrigger);
+    console.log("timeTrigger监听改变了-originToken---", originToken);
+    getTokenInfo()
+  }, [timeTrigger]);
   useEffect(() => {
     initData();
   }, []);

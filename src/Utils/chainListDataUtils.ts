@@ -37,9 +37,6 @@ export const findContractInfo = async (
   originTokenAddress,
   chainId,
 ) => {
-  console.log("查询对应的池子的值1", contractAddress);
-  console.log("查询对应的池子的值2", type);
-  console.log("查询对应的池子的值3", originTokenAddress);
   switch (type) {
     case "v2":
       //v2的查询
@@ -65,7 +62,6 @@ const findUniswapV2Info = async (
   chainId,
 ) => {
   const chainData = findChainById(chainId);
-  console.log("chainData==", chainData);
   //查询pair地址
   const pairAddress: string = await findPairAddress(
     chainData,
@@ -170,21 +166,23 @@ const pairAddressInfoByAddress = async (
       throw new Error("池子不包含当前选中的代币");
     }
   } catch (error) {}
-
-  const usdtAmount = Number(fromWei(usdtReserve));
+  const originTokenAmount = Number(fromWei(usdtReserve));
   //池子的代币数量
   const tokenAmount = Number(fromWei(tokenReserve));
-  // 代币价格（USDT）
-  const tokenPriceUSDT = usdtAmount / tokenAmount;
+  // 代币价格
+  const tokenPrice = originTokenAmount / tokenAmount;
   //池子代币占比
   const tokenRato = (tokenAmount / totalSupplyAmount) * 100;
-  console.log("代币价格==", tokenPriceUSDT);
+  console.log("代币的数量==", tokenAmount);
+  console.log("代币价格==", tokenPrice);
   console.log("池子代币占比==", tokenRato);
-  console.log("池子usdt价格==", usdtAmount);
+  console.log("池子基础代币数量==", originTokenAmount);
   useOriginTokenInfoStore.getState().setTokenInfo({
     tokenRato: tokenRato,
-    tokenPrice: tokenPriceUSDT,
-    usdtAmount: usdtAmount,
+    tokenPrice: tokenPrice,
+    originTokenAmount: originTokenAmount,
     tokenAmount: tokenAmount,
+    totalSupplyAmount:totalSupplyAmount
   });
+  useChainStore.getState().triggerEvent();
 };

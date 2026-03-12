@@ -38,7 +38,7 @@ interface walletItem {
   saleOriginalTokenBalance: BigNumber; //可卖出余额
 }
 const WalletBox: React.FC = () => {
-  const { originTokenName, chainId } = useChainStore();
+  const { originTokenName, chainId, trigger } = useChainStore();
   const exportHeaders = [
     { label: "地址", key: "address" },
     { label: `${originTokenName}余额`, key: "originalTokenBalance" },
@@ -46,6 +46,7 @@ const WalletBox: React.FC = () => {
     { label: "私钥", key: "privateKey" },
     { label: "标签", key: "tag" },
   ];
+  const [searchLoading, setSearchLoading] = useState<boolean>(false);
   const [generateDialogOpen, setGenerateDialogOpen] = useState<boolean>(false); //是否展示 创建钱包弹窗
   const [importWalletOpen, setImportWalletOpen] = useState<boolean>(false); //是否展示 导入钱包弹窗
   const [exportLoading, setExportLoading] = useState<boolean>(false); //是否展示 导入钱包弹窗
@@ -135,6 +136,7 @@ const WalletBox: React.FC = () => {
       ),
     },
   ];
+
   /**
    * 打开生成钱包弹窗
    */
@@ -206,9 +208,7 @@ const WalletBox: React.FC = () => {
    * 得到钱包列表的总数
    */
   const initData = async () => {
-    // const walletList = await getWalletPage(current, pageSize);
     const walletList = await getAllWallet();
-    console.log("walletList=1=", walletList);
     setDataSource(walletList);
   };
   /**
@@ -238,9 +238,13 @@ const WalletBox: React.FC = () => {
    * 通过查询条件获取对应的钱包数据列表
    */
   const searchTableChange = async () => {
-    console.log("walletAddress==", walletAddress);
-    await totalWalletBalance(originTokenName);
-
+    setSearchLoading(true);
+    try {
+      await totalWalletBalance(originTokenName);
+    } catch (error) {
+    } finally {
+      setSearchLoading(false);
+    }
     //只查询钱包地址只有一个结果
     if (checkValue(walletAddress?.trim())) {
       //钱包有内容
@@ -311,6 +315,11 @@ const WalletBox: React.FC = () => {
     });
     return result;
   };
+
+  useEffect(() => {
+    searchTableChange();
+    console.log("监听进来了");
+  }, [trigger]);
   useEffect(() => {
     initData();
     initTagList();
@@ -382,8 +391,11 @@ const WalletBox: React.FC = () => {
                 全选
               </Button>
             </Popconfirm>
-
-            <Button type="primary" onClick={() => searchTableChange()}>
+            <Button
+              type="primary"
+              loading={searchLoading}
+              onClick={() => searchTableChange()}
+            >
               查询
             </Button>
 
