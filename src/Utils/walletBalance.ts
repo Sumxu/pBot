@@ -8,8 +8,9 @@ import { useOriginTokenInfoStore } from "@/Store/originTokenInfoStore";
 const burnAddress1 = "0x000000000000000000000000000000000000dEaD"; //销毁地址
 const burnAddress2 = "0x0000000000000000000000000000000000000000"; //销毁地址
 let pairAddress: string = "";
+let searchAddress: string = "";
 let chainId: number = 0;
-const walletAddressList = async () => {
+export const walletAddressList = async () => {
   const walletsData = await getAllWallet();
   return walletsData;
 };
@@ -41,20 +42,15 @@ export const originTokensBalance = async (
 export const totalWalletBalance = async (originTokenValue) => {
   chainId = useChainStore.getState().chainId; //链id
   pairAddress = useChainStore.getState().pairAddress; //链id
+  searchAddress = useChainStore.getState().searchAddress; //链id
   const chainData = findChainById(chainId);
-  console.log("chainId==", chainId);
-  console.log("chainData==", chainData);
   const findTokenData = findListData(
     chainData?.baseToken,
     "label",
     originTokenValue,
   );
-  console.log("chainListData", chainListData);
   //数据库查询所有的钱包地址
   const walletList = await walletAddressList();
-  console.log("originTokenValue==", originTokenValue);
-  console.log("walletList==", walletList);
-  console.log("tokenAddfindTokenData.addressress==", findTokenData.address);
   if (originTokenValue == "BNB") {
     //原生代币查询
     await originTokensBalance(chainData, findTokenData.address, walletList);
@@ -65,7 +61,6 @@ export const totalWalletBalance = async (originTokenValue) => {
 };
 //esc20查询
 const tokensBalance = async (chainData, tokenAddress, walletList) => {
-  console.log("pairAddress==", pairAddress);
   //解析
   try {
     const originTokenCalls = walletList.map((walletItem) => ({
@@ -98,14 +93,21 @@ export const walletDataTotal = async (
   const originTokenInfo = useOriginTokenInfoStore.getState().tokenInfo; //lp地址
   let tokenCalls = [];
   let tokenResult = [];
-  const searchAddress = useChainStore.getState().searchAddress; //链id
-  if (pairAddress != "-") {
+  const searchAddress = useChainStore.getState().searchAddress; //
+  console.log("searchAddress==", searchAddress);
+  if (searchAddress != "-") {
     tokenCalls = walletList.map((walletItem) => ({
-      address: pairAddress,
+      address: searchAddress,
       abi: chainData.erc20,
       method: "balanceOf",
       params: [walletItem.address], // balanceOf 的参数就是钱包地址
     }));
+    tokenCalls.push({
+      address: chainData.swapRouterAddress,
+      abi: chainData.swapRouterAbi,
+      method: "getAmountsOut",
+      params: [toWei(1), [searchAddress, tokenAddress]],
+    });
     tokenResult = await multiCall(
       chainData?.rpcUrl,
       chainData.multiCallAddress,
@@ -114,13 +116,14 @@ export const walletDataTotal = async (
   }
   walletList.map((walletItem, index) => {
     walletItem.originalTokenBalance = fromWei(walletsBalanceResult[index]);
-    if (pairAddress != "-") {
+    if (searchAddress != "-") {
       walletItem.esc20Balance = fromWei(tokenResult[index]);
       //如果存在代币价格则进行计算
-      if (originTokenInfo?.tokenPrice) {
-        walletItem.saleOriginalTokenBalance =
-          originTokenInfo?.tokenPrice * Number(fromWei(tokenResult[index]));
-      }
+      const tokenPriceFormOne = tokenResult[walletList.length];
+      const tokenPriceFormOneAmount = fromWei(tokenPriceFormOne.amounts[1]);
+      walletItem.saleOriginalTokenBalance = (
+        Number(tokenPriceFormOneAmount) * Number(fromWei(tokenResult[index]))
+      ).toFixed(4);
     }
   });
   const burnCalls = [
@@ -160,17 +163,14 @@ export const walletDataTotal = async (
     (walletTokenTotalAmount / Number(originTokenInfo.tokenAmount)) * 100;
   console.log("可掏池子基础代币数量==", putableTokenAmount);
   console.log("持有代币数量==", walletTokenTotalAmount);
-  console.log("统计持有usdt数量==", walletOriginTokenTotalAmount);
+  console.log("统计持有基础代币数量==", walletOriginTokenTotalAmount);
   console.log("统计持有代币比例==", walletTokenRato);
   console.log("统计持有代币比例=tokenAmount=", originTokenInfo.tokenAmount);
-
   //外部可掏池子的usdt数量减去两个销毁地址的数量
   console.log("burnsResult", burnsResult);
 
   let burnsNums =
     Number(fromWei(burnsResult[0])) + Number(burnsResult[1]?.toString());
-  console.log("burnsNums", burnsNums);
-
   const externalTokenAmount =
     originTokenInfo.totalSupplyAmount -
     originTokenInfo.tokenAmount -
@@ -189,8 +189,9 @@ export const walletDataTotal = async (
     chainData.multiCallAddress,
     swapRouterCall,
   );
-  const amountsOut = externalOriginAmountResult[0][0];
-  const externalOriginAmount = Number(fromWei(amountsOut[1]));
+  const amountsOut = externalOriginAmountResult[0].amounts[1];
+  const externalOriginAmount = fromWei(amountsOut[1]);
+  console.log("储存的值==", walletList);
   //地址持有代币比例
   await addOrUpdateWallets(walletList);
   useOriginTokenInfoStore.getState().setTokenInfo({

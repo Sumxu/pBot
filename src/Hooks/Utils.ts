@@ -503,6 +503,19 @@ export const parseWalletInput = (input: string): ParsedWallet[] => {
     })
     .filter(Boolean) as ParsedWallet[];
 };
+/**
+ * 
+ * @param ms 毫秒
+ * @returns 返回多少秒
+ */
 export function msToSeconds(ms: number): number {
   return ms / 1000;
+}
+/**
+ * 
+ * @param str 字符串
+ * @returns 判断不能是负数和是数字类型
+ */
+export function isValidNumber(str) {
+  return /^(0|[1-9]\d*)(\.\d+)?$/.test(str);
 }

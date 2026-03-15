@@ -34,7 +34,7 @@ const SilderBox: React.FC = () => {
     useState<boolean>(false); //是否禁用币种选择
   const [pondListDisabled, setPondListDisabled] = useState<boolean>(false); //是否禁用池子选择
   const [searchAddress, setSearchAddress] = useState<string>(
-    "0x80F1fF15B887CB19295D88C8c16F89d47f6D8888",
+    "0xc8F4E6857C75f1c61e41202cF9c3eBa548AE4baA",
   ); //查询合约地址
   const [originToken, setOriginToken] = useState<string>(); //原始代币地址
   const [pondType, setPondType] = useState<string>(); //选择的池子类型

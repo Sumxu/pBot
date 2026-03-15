@@ -4,7 +4,7 @@ import { getGlobal, updateGlobal } from "@/Idb/Servers/globalService";
 //链路的监听
 interface ChainState {
   chainId: number; //链Id
-  originTokenName: string; //代币名称
+  originTokenName: string; //基础代币名称
   pairAddress: string; //lp池地址
   trigger: number; // 事件触发器
   timeTrigger: number; // 事件触发器
